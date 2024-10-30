@@ -1,0 +1,24 @@
+<!-- res/drawable/rounded_bottom_nav.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Capa para el borde dorado -->
+    <item>
+        <shape>
+            <solid android:color="#BFA26B" /> <!-- Color dorado para el borde -->
+            <corners android:radius="20dp" /> <!-- Radio del borde dorado -->
+        </shape>
+    </item>
+
+    <!-- Capa para el fondo negro con borde redondeado interior -->
+    <item
+        android:left="2dp"
+        android:top="2dp"
+        android:right="2dp"
+        android:bottom="2dp">
+        <shape>
+            <solid android:color="#1A1A1F" /> <!-- Color de fondo negro -->
+            <corners android:radius="16dp" /> <!-- Radio para bordes redondeados -->
+        </shape>
+    </item>
+
+</layer-list>

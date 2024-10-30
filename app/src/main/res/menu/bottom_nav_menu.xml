@@ -1,0 +1,16 @@
+<!-- res/menu/bottom_nav_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:title="Inicio" />
+
+    <item
+        android:id="@+id/nav_books"
+        android:title="Libros" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:title="Perfil" />
+
+</menu>
