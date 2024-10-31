@@ -24,6 +24,7 @@
         </activity>
 
         <!-- Puedes agregar otras actividades aquí si es necesario -->
+        <activity android:name="com.example.appsandersonsm.DetallesLibroActivity" />
 
     </application>
 

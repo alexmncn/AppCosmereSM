@@ -1,14 +1,16 @@
 package com.example.appsandersonsm
 
-import android.graphics.Color
+import android.content.Intent
 import android.graphics.Matrix
 import android.graphics.PointF
-import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.appsandersonsm.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import io.getstream.photoview.PhotoView
 
 class MapaInteractivoActivity : AppCompatActivity() {
@@ -16,49 +18,22 @@ class MapaInteractivoActivity : AppCompatActivity() {
     private lateinit var photoView: PhotoView
     private lateinit var markerContainer: FrameLayout
 
-    // Coordenadas originales en la imagen del mapa
-    private val libroCoordenadas = listOf(
-        // Sumar +1000 a to_do para que se vea mas centrado
-        PointF(2650f, 518f),      // Coordenadas para el El alma del emperador
-        PointF(1950f, 318f),  // Coordenadas para el Elantris
-        PointF(1800f, 921f),   // Coordenadas para el La esperanza de Elantris
-        PointF(2000f,1800f), // libro Nacidos de la bruma
-        PointF(2100f, 2300f), // libro Pozo de la ascensión
-        PointF(2200f, 2800f), // libro El héreo de las eras
-        PointF(1950f, 3500f), // libro El aliento de los dioses
-        PointF(2800f, 3600f), // El camino de los reyes
-        PointF(3400f, 3900f), // Palabras Radiantes
-        PointF(4200f, 4100f), // Juramentada
-        PointF(5000f, 3900f), // El ritmo de la guerra
-        PointF(5800f, 3000f), // Trenza
-        PointF(6500f, 1500f), // Yumi
-
-
-
-
+    // Coordenadas normalizadas (valores entre 0 y 1) respecto al tamaño original de la imagen
+    private val libroCoordenadasNormalizadas = listOf(
+        PointF(0.3f, 0.2f),  // 30% desde la izquierda, 20% desde la parte superior para "El alma del emperador"
+        PointF(0.7f, 0.8f)   // 70% desde la izquierda, 80% desde la parte superior para "Elantris"
+        // Agrega más coordenadas según tus necesidades
     )
 
-    // Colores en formato de cadena HEX para cada marcador
-    private val libroColores = listOf(
-        "#FF0000",  // Rojo para el libro 1
-        "#0000FF",  // Azul para el libro 2
-        "#00FF00",   // Verde para el libro 3
-        "#FF1493", // libro 4
-        "#FF4500", // libro 5
-        "#FFD700", // libro 6
-        "#FF0000", // libro 7 el aliento de los dioses
-        "#0000FF",  // Azul para el libro Camino de los reyes
-        "#FF1493",  // Azul para el libro Palabras radiante
-        "#00FF00",   // Verde para el libro Juramentada
-        "#FF0000", // libro Ritmo de guerra
-        "#FF4500", // libro Trenza
-        "#FFD700", // libro Yumi
-
-
-
+    // Recursos de imágenes para cada libro
+    private val libroImagenes = listOf(
+        R.drawable.portada_elcamino,          // Portada para "El alma del emperador"
+        R.drawable.portada_palabrasradiantes   // Portada para "Elantris"
+        // Agrega más imágenes según tus necesidades
     )
 
-    private val markers = mutableListOf<View>()
+    private val markers = mutableListOf<ImageView>()
+    private lateinit var drawable: Drawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,12 +42,41 @@ class MapaInteractivoActivity : AppCompatActivity() {
         photoView = findViewById(R.id.photoView)
         markerContainer = findViewById(R.id.mapContainer)
 
-        // Añadir marcadores en posiciones específicas en el mapa con colores personalizados
-        libroCoordenadas.forEachIndexed { index, coord ->
-            val marker = View(this).apply {
-                layoutParams = FrameLayout.LayoutParams(50, 50)
-                setBackgroundColor(Color.parseColor(libroColores[index]))  // Convierte el color de cadena a entero
+        // Carga la imagen en el PhotoView (asegúrate de que la imagen esté establecida en el XML o aquí)
+        // Si la imagen está establecida en el XML como en el ejemplo, obtén el drawable de PhotoView
+        drawable = photoView.drawable ?: throw IllegalStateException("PhotoView no tiene una imagen establecida.")
+
+        // Configuración de zoom
+        photoView.minimumScale = 1.0f
+        photoView.mediumScale = 1.5f
+        photoView.maximumScale = 3.0f
+
+        // Listener para inicializar los marcadores después de que `PhotoView` esté completamente cargado
+        photoView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                inicializarMarcadores()
+                photoView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+
+        // Listener para actualizar la posición de los marcadores cuando se desplaza o hace zoom en `PhotoView`
+        photoView.setOnMatrixChangeListener { actualizarMarcadores() }
+    }
+
+    private fun inicializarMarcadores() {
+        libroCoordenadasNormalizadas.forEachIndexed { index, _ ->
+            val marker = ImageView(this).apply {
+                val sizeInDp = 60 // Tamaño del marcador en dp (más grande)
+                val scale = resources.displayMetrics.density
+                val sizeInPx = (sizeInDp * scale + 0.5f).toInt()
+                layoutParams = FrameLayout.LayoutParams(sizeInPx, sizeInPx)
+                scaleType = ImageView.ScaleType.CENTER_CROP
                 contentDescription = "Libro ${index + 1}"
+                // Carga la imagen circular utilizando Glide
+                Glide.with(this@MapaInteractivoActivity)
+                    .load(libroImagenes.getOrElse(index) { R.drawable.portada_elcamino })
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(this)
                 setOnClickListener {
                     abrirDetallesLibro(index + 1)
                 }
@@ -80,36 +84,41 @@ class MapaInteractivoActivity : AppCompatActivity() {
             markers.add(marker)
             markerContainer.addView(marker)
         }
-
-        // Configura el listener para actualizar los marcadores en función del zoom y desplazamiento
-        photoView.setOnMatrixChangeListener { matrixRect ->
-            if (matrixRect != null) {
-                actualizarMarcadores(matrixRect)
-            }
-        }
+        actualizarMarcadores() // Actualiza las posiciones iniciales
     }
 
-    private fun actualizarMarcadores(matrixRect: RectF) {
-        // Obtén la matriz de transformación actual del PhotoView
+    private fun actualizarMarcadores() {
         val matrix = FloatArray(9)
         photoView.imageMatrix.getValues(matrix)
 
+        // Escala y traslación actuales
         val scaleX = matrix[Matrix.MSCALE_X]
         val scaleY = matrix[Matrix.MSCALE_Y]
         val transX = matrix[Matrix.MTRANS_X]
         val transY = matrix[Matrix.MTRANS_Y]
 
-        // Actualiza la posición de cada marcador en función de la transformación actual
-        libroCoordenadas.forEachIndexed { index, coord ->
-            val marker = markers[index]
-            val newX = coord.x * scaleX + transX
-            val newY = coord.y * scaleY + transY
-            marker.x = newX
-            marker.y = newY
+        // Dimensiones originales de la imagen
+        val imageWidth = drawable.intrinsicWidth.toFloat()
+        val imageHeight = drawable.intrinsicHeight.toFloat()
+
+        // Calcula las dimensiones escaladas
+        val scaledWidth = imageWidth * scaleX
+        val scaledHeight = imageHeight * scaleY
+
+        markers.forEachIndexed { index, marker ->
+            val coordNormalizada = libroCoordenadasNormalizadas[index]
+            // Calcula la posición absoluta basada en las coordenadas normalizadas
+            val absX = (coordNormalizada.x * scaledWidth) + transX
+            val absY = (coordNormalizada.y * scaledHeight) + transY
+            // Centra el marcador
+            marker.x = absX - (marker.width / 2)
+            marker.y = absY - (marker.height / 2)
         }
     }
 
     private fun abrirDetallesLibro(libroId: Int) {
-        // Aquí puedes iniciar una actividad de detalles o mostrar un diálogo con la información del libro
+        val intent = Intent(this, DetallesLibroActivity::class.java)
+        intent.putExtra("LIBRO_ID", libroId)
+        startActivity(intent)
     }
 }
