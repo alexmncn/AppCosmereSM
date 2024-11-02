@@ -1,46 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@drawable/image_border"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    tools:context=".DetallesLibroActivity">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="@drawable/image_border"
+        android:fillViewport="true"
+        tools:context=".DetallesLibroActivity"
+        >
 
-        <!-- Imagen de portada del libro -->
-        <ImageView
-            android:id="@+id/portadaImageView"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="Portada del Libro"
-            android:scaleType="centerCrop"
-            android:src="@drawable/portada_elcamino" />
-
-        <!-- Título del libro -->
-        <TextView
-            android:id="@+id/tituloTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Título del Libro"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textAlignment="center"
-            android:layout_gravity="center_horizontal" />
-
-        <!-- Descripción del libro -->
-        <TextView
-            android:id="@+id/descripcionTextView"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detailConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Descripción del Libro"
-            android:textAppearance="?attr/textAppearanceBody1" />
+            android:background="#1A1A1F"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            >
 
-        <!-- Puedes agregar más vistas para mostrar información adicional -->
+            <!-- INICIO Guidelines ImageView -->
 
-    </LinearLayout>
-</ScrollView>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical_imageViewL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.01" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical_imageViewR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.99" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_horizontal_imageViewU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.0050" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_horizontal_imageViewD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.75" />
+
+            <!-- FIN Guidelines ImageView -->
+
+            <ImageView
+                android:id="@+id/portadaImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/portada_elcamino"
+                app:layout_constraintEnd_toEndOf="@id/guideline_vertical_imageViewR"
+                app:layout_constraintStart_toStartOf="@id/guideline_vertical_imageViewL"
+                app:layout_constraintTop_toBottomOf="@id/guideline_horizontal_imageViewU"
+                app:layout_constraintBottom_toTopOf="@id/guideline_horizontal_imageViewD"
+                />
+
+
+            <!-- ProgressBar Personalizada -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:progress="50"
+                android:progressDrawable="@drawable/progress_bar_custom"
+                android:layout_marginTop="-10dp"
+                app:layout_constraintEnd_toEndOf="@id/guideline_vertical_imageViewR"
+                app:layout_constraintTop_toBottomOf="@id/portadaImageView"
+                app:layout_constraintStart_toStartOf="@id/guideline_vertical_imageViewL"
+                app:layout_constraintBottom_toTopOf="@id/guideline_horizontal_imageViewD"
+                />
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toBottomOf="@id/guideline_horizontal_imageViewD"
+                android:background="@color/white"
+                android:text="Iniciar"
+                app:layout_constraintStart_toStartOf="@id/guideline_vertical_imageViewL"
+                app:layout_constraintEnd_toEndOf="@id/guideline_vertical_imageViewR"
+                android:layout_marginTop="200dp"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:translationY="-32dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/rounded_bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+
+        app:itemIconTint="#403528" />
+
+</LinearLayout>

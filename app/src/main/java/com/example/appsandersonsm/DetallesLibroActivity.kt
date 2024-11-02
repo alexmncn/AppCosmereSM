@@ -1,65 +1,47 @@
+// DetallesLibroActivity.kt
+
 package com.example.appsandersonsm
 
 import android.os.Bundle
-import android.widget.ImageView
+import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 
 class DetallesLibroActivity : AppCompatActivity() {
 
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressTextView: TextView
+    private lateinit var iniciarButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detalles_libro)
+        setContentView(R.layout.activity_detalles_libro) // Asegúrate de que el nombre del layout sea correcto
 
-        val libroId = intent.getIntExtra("LIBRO_ID", -1)
-        if (libroId == -1) {
-            // Manejar el error, por ejemplo, finalizar la actividad
-            finish()
-            return
+        /*
+        // Inicializar vistas
+        progressBar = findViewById(R.id.progressBar)
+        progressTextView = findViewById(R.id.progressTextView)
+        iniciarButton = findViewById(R.id.iniciarButton)
+
+        // Configurar el progreso inicial
+        updateProgress(50) // Por ejemplo, 50%
+
+        // Listener para actualizar el progreso al hacer clic en el botón
+        iniciarButton.setOnClickListener {
+            val newProgress = progressBar.progress + 10
+            if (newProgress <= progressBar.max) {
+                updateProgress(newProgress)
+            }
         }
-
-        // Referencias a las vistas
-        val tituloTextView: TextView = findViewById(R.id.tituloTextView)
-        val portadaImageView: ImageView = findViewById(R.id.portadaImageView)
-        val descripcionTextView: TextView = findViewById(R.id.descripcionTextView)
-
-        // Datos de los libros (puedes reemplazar esto con una base de datos o API)
-        val libros = listOf(
-            Libro(
-                id = 1,
-                titulo = "El alma del emperador",
-                descripcion = "Descripción detallada de 'El alma del emperador'.",
-                portadaResId = R.drawable.portada_elcamino
-            ),
-            Libro(
-                id = 2,
-                titulo = "Elantris",
-                descripcion = "Descripción detallada de 'Elantris'.",
-                portadaResId = R.drawable.portada_palabrasradiantes
-            )
-            // Agrega más libros según tus necesidades
-        )
-
-        val libro = libros.find { it.id == libroId }
-        if (libro == null) {
-            // Manejar el caso donde el libro no se encuentra
-            finish()
-            return
-        }
-
-        // Configurar las vistas con la información del libro
-        tituloTextView.text = libro.titulo
-        descripcionTextView.text = libro.descripcion
-        Glide.with(this)
-            .load(libro.portadaResId)
-            .into(portadaImageView)
     }
 
-    data class Libro(
-        val id: Int,
-        val titulo: String,
-        val descripcion: String,
-        val portadaResId: Int
-    )
+    private fun updateProgress(progress: Int) {
+        progressBar.progress = progress
+        progressTextView.text = "$progress%"
+    }
+
+     */
+    }
 }

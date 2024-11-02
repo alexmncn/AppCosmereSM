@@ -36,8 +36,9 @@ android {
 }
 
 dependencies {
-    implementation("com.github.bumptech.glide:glide:4.15.1")
-    implementation("io.getstream:photoview:1.0.2")
+    implementation (libs.labs.subsampling.scale.image.view)
+    implementation(libs.glide)
+    implementation(libs.getstream.photoview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
