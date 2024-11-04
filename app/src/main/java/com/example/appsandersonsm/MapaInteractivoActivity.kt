@@ -11,12 +11,14 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.getstream.photoview.PhotoView
 
 class MapaInteractivoActivity : AppCompatActivity() {
 
     private lateinit var photoView: PhotoView
     private lateinit var markerContainer: FrameLayout
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     // Coordenadas normalizadas (valores entre 0 y 1) respecto al tamaño original de la imagen
     private val libroCoordenadasNormalizadas = listOf(
@@ -41,9 +43,9 @@ class MapaInteractivoActivity : AppCompatActivity() {
 
         photoView = findViewById(R.id.photoView)
         markerContainer = findViewById(R.id.mapContainer)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         // Carga la imagen en el PhotoView (asegúrate de que la imagen esté establecida en el XML o aquí)
-        // Si la imagen está establecida en el XML como en el ejemplo, obtén el drawable de PhotoView
         drawable = photoView.drawable ?: throw IllegalStateException("PhotoView no tiene una imagen establecida.")
 
         // Configuración de zoom
@@ -61,12 +63,40 @@ class MapaInteractivoActivity : AppCompatActivity() {
 
         // Listener para actualizar la posición de los marcadores cuando se desplaza o hace zoom en `PhotoView`
         photoView.setOnMatrixChangeListener { actualizarMarcadores() }
+
+        // Configuración de BottomNavigationView
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_settings -> {
+                    // Navegar a la actividad de ajustes
+                    val intent = Intent(this, AjustesActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_map -> {
+                    // Navegar a la actividad de libros
+                    val intent = Intent(this, MapaInteractivoActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_book -> {
+                    // Navegar a la actividad de libros
+                    val intent = Intent(this, LibroActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // Opcional: marcar como seleccionado el ícono del mapa
+        bottomNavigationView.menu.findItem(R.id.nav_map).isChecked = true
     }
 
     private fun inicializarMarcadores() {
         libroCoordenadasNormalizadas.forEachIndexed { index, _ ->
             val marker = ImageView(this).apply {
-                val sizeInDp = 60 // Tamaño del marcador en dp (más grande)
+                val sizeInDp = 60 // Tamaño del marcador en dp
                 val scale = resources.displayMetrics.density
                 val sizeInPx = (sizeInDp * scale + 0.5f).toInt()
                 layoutParams = FrameLayout.LayoutParams(sizeInPx, sizeInPx)

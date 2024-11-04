@@ -1,47 +1,57 @@
-// DetallesLibroActivity.kt
-
 package com.example.appsandersonsm
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DetallesLibroActivity : AppCompatActivity() {
-
 
     private lateinit var progressBar: ProgressBar
     private lateinit var progressTextView: TextView
     private lateinit var iniciarButton: Button
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detalles_libro) // Asegúrate de que el nombre del layout sea correcto
+        setContentView(R.layout.activity_detalles_libro)
 
-        /*
-        // Inicializar vistas
         progressBar = findViewById(R.id.progressBar)
-        progressTextView = findViewById(R.id.progressTextView)
-        iniciarButton = findViewById(R.id.iniciarButton)
+//        progressTextView = findViewById(R.id.progressTextView)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-        // Configurar el progreso inicial
-        updateProgress(50) // Por ejemplo, 50%
+//        updateProgress(50)
 
-        // Listener para actualizar el progreso al hacer clic en el botón
-        iniciarButton.setOnClickListener {
-            val newProgress = progressBar.progress + 10
-            if (newProgress <= progressBar.max) {
-                updateProgress(newProgress)
+//        iniciarButton.setOnClickListener {
+//            val newProgress = progressBar.progress + 10
+//            if (newProgress <= progressBar.max) {
+//                updateProgress(newProgress)
+//            }
+//        }
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_settings -> {
+                    startActivity(Intent(this, AjustesActivity::class.java))
+                    true
+                }
+                R.id.nav_map -> {
+                    startActivity(Intent(this, MapaInteractivoActivity::class.java))
+                    true
+                }
+                R.id.nav_book -> true
+                else -> false
             }
         }
+
+        bottomNavigationView.menu.findItem(R.id.nav_book).isChecked = true
     }
 
-    private fun updateProgress(progress: Int) {
-        progressBar.progress = progress
-        progressTextView.text = "$progress%"
-    }
-
-     */
-    }
+//    private fun updateProgress(progress: Int) {
+//        progressBar.progress = progress
+//        progressTextView.text = "$progress%"
+//    }
 }
