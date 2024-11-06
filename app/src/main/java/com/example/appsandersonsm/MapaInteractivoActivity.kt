@@ -22,15 +22,15 @@ class MapaInteractivoActivity : AppCompatActivity() {
 
     // Coordenadas normalizadas (valores entre 0 y 1) respecto al tamaño original de la imagen
     private val libroCoordenadasNormalizadas = listOf(
-        PointF(0.3f, 0.2f),  // 30% desde la izquierda, 20% desde la parte superior para "El alma del emperador"
-        PointF(0.7f, 0.8f)   // 70% desde la izquierda, 80% desde la parte superior para "Elantris"
+        PointF(0.5f, 0.85f),  // 1º Libro en la lista
+        PointF(0.6f, 0.8f)   // 2º Libro en la lista
         // Agrega más coordenadas según tus necesidades
     )
 
     // Recursos de imágenes para cada libro
     private val libroImagenes = listOf(
-        R.drawable.portada_elcamino,          // Portada para "El alma del emperador"
-        R.drawable.portada_palabrasradiantes   // Portada para "Elantris"
+        R.drawable.portada_elcamino,
+        R.drawable.portada_elcamino,
         // Agrega más imágenes según tus necesidades
     )
 
@@ -101,14 +101,14 @@ class MapaInteractivoActivity : AppCompatActivity() {
                 val sizeInPx = (sizeInDp * scale + 0.5f).toInt()
                 layoutParams = FrameLayout.LayoutParams(sizeInPx, sizeInPx)
                 scaleType = ImageView.ScaleType.CENTER_CROP
-                contentDescription = "Libro ${index + 1}"
+                contentDescription = "Libro ${index+1}"
                 // Carga la imagen circular utilizando Glide
                 Glide.with(this@MapaInteractivoActivity)
                     .load(libroImagenes.getOrElse(index) { R.drawable.portada_elcamino })
                     .apply(RequestOptions.circleCropTransform())
                     .into(this)
                 setOnClickListener {
-                    abrirDetallesLibro(index + 1)
+                    abrirDetallesLibro(index+1)
                 }
             }
             markers.add(marker)

@@ -87,16 +87,51 @@
                 app:layout_constraintBottom_toTopOf="@id/guideline_horizontal_imageViewD"
                 />
 
-            <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:layout_constraintTop_toBottomOf="@id/guideline_horizontal_imageViewD"
-                android:background="@color/white"
-                android:text="Iniciar"
-                app:layout_constraintStart_toStartOf="@id/guideline_vertical_imageViewL"
+            <LinearLayout
+                android:id="@+id/lnLprogressInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/progressBar"
                 app:layout_constraintEnd_toEndOf="@id/guideline_vertical_imageViewR"
-                android:layout_marginTop="200dp"
-                />
+                app:layout_constraintStart_toStartOf="@id/guideline_vertical_imageViewL"
+                android:layout_marginTop="15dp"
+                android:gravity="center">
+
+                <EditText
+                    android:id="@+id/editTextProgressCurrent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="0"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:textColorHint="@color/gold"
+                    android:gravity="center"
+                    android:ems="4"/>
+
+                <TextView
+                    android:id="@+id/textViewSeparator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/"
+                    android:textColor="@color/gold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <EditText
+                    android:id="@+id/editTextProgressTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="100"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:textColorHint="@color/gold"
+                    android:gravity="center"
+                    android:ems="4"/>
+
+            </LinearLayout>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
