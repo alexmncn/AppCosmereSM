@@ -11,6 +11,8 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.appsandersonsm.Modelo.Libro
+import com.example.appsandersonsm.MySQL.DatabaseHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.getstream.photoview.PhotoView
 
@@ -19,27 +21,26 @@ class MapaInteractivoActivity : AppCompatActivity() {
     private lateinit var photoView: PhotoView
     private lateinit var markerContainer: FrameLayout
     private lateinit var bottomNavigationView: BottomNavigationView
-
-    // Coordenadas normalizadas (valores entre 0 y 1) respecto al tamaño original de la imagen
-    private val libroCoordenadasNormalizadas = listOf(
-        PointF(0.5f, 0.85f),  // 1º Libro en la lista
-        PointF(0.6f, 0.8f)   // 2º Libro en la lista
-        // Agrega más coordenadas según tus necesidades
-    )
-
-    // Recursos de imágenes para cada libro
-    private val libroImagenes = listOf(
-        R.drawable.portada_elcamino,
-        R.drawable.portada_elcamino,
-        // Agrega más imágenes según tus necesidades
-    )
-
+    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var listaLibros: List<Libro>
     private val markers = mutableListOf<ImageView>()
     private lateinit var drawable: Drawable
+
+    // Coordenadas normalizadas asociadas por ID de libro
+    private val libroCoordenadasNormalizadas = mapOf(
+        1 to PointF(0.5f, 0.85f),  // ID 1
+        2 to PointF(0.6f, 0.8f)    // ID 2
+        // Agrega más entradas según tus necesidades
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mapa_interactivo)
+
+        // Base de Datos
+        dbHelper = DatabaseHelper(this)
+        crearOActualizarLibros()
+        listaLibros = dbHelper.getAllLibros()
 
         photoView = findViewById(R.id.photoView)
         markerContainer = findViewById(R.id.mapContainer)
@@ -74,9 +75,7 @@ class MapaInteractivoActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_map -> {
-                    // Navegar a la actividad de libros
-                    val intent = Intent(this, MapaInteractivoActivity::class.java)
-                    startActivity(intent)
+                    // Ya estás en MapaInteractivoActivity, puedes refrescar o hacer otra acción
                     true
                 }
                 R.id.nav_book -> {
@@ -94,21 +93,22 @@ class MapaInteractivoActivity : AppCompatActivity() {
     }
 
     private fun inicializarMarcadores() {
-        libroCoordenadasNormalizadas.forEachIndexed { index, _ ->
+        listaLibros.forEach { libro ->
             val marker = ImageView(this).apply {
                 val sizeInDp = 60 // Tamaño del marcador en dp
                 val scale = resources.displayMetrics.density
                 val sizeInPx = (sizeInDp * scale + 0.5f).toInt()
                 layoutParams = FrameLayout.LayoutParams(sizeInPx, sizeInPx)
                 scaleType = ImageView.ScaleType.CENTER_CROP
-                contentDescription = "Libro ${index+1}"
+                contentDescription = "Libro ${libro.id}"
                 // Carga la imagen circular utilizando Glide
+                val resID = resources.getIdentifier(libro.nombrePortada, "drawable", packageName)
                 Glide.with(this@MapaInteractivoActivity)
-                    .load(libroImagenes.getOrElse(index) { R.drawable.portada_elcamino })
+                    .load(resID)
                     .apply(RequestOptions.circleCropTransform())
                     .into(this)
                 setOnClickListener {
-                    abrirDetallesLibro(index+1)
+                    abrirDetallesLibro(libro.id)
                 }
             }
             markers.add(marker)
@@ -136,7 +136,8 @@ class MapaInteractivoActivity : AppCompatActivity() {
         val scaledHeight = imageHeight * scaleY
 
         markers.forEachIndexed { index, marker ->
-            val coordNormalizada = libroCoordenadasNormalizadas[index]
+            val libro = listaLibros[index]
+            val coordNormalizada = libroCoordenadasNormalizadas[libro.id] ?: PointF(0.5f, 0.5f) // Valor por defecto
             // Calcula la posición absoluta basada en las coordenadas normalizadas
             val absX = (coordNormalizada.x * scaledWidth) + transX
             val absY = (coordNormalizada.y * scaledHeight) + transY
@@ -150,5 +151,26 @@ class MapaInteractivoActivity : AppCompatActivity() {
         val intent = Intent(this, DetallesLibroActivity::class.java)
         intent.putExtra("LIBRO_ID", libroId)
         startActivity(intent)
+    }
+
+    private fun crearOActualizarLibros() {
+        val libro1 = Libro(
+            id = 1,
+            nombreLibro = "El Camino de los Reyes",
+            nombreSaga = "La Guerra de las Tormentas",
+            nombrePortada = "portada_elcamino",
+            progreso = 20
+        )
+
+        val libro2 = Libro(
+            id = 2,
+            nombreLibro = "Palabras Radiantes",
+            nombreSaga = "La Guerra de las Tormentas",
+            nombrePortada = "portada_palabrasradiantes",
+            progreso = 50
+        )
+
+        dbHelper.insertOrUpdateLibro(libro1)
+        dbHelper.insertOrUpdateLibro(libro2)
     }
 }
