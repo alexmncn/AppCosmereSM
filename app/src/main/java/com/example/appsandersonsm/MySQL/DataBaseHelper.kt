@@ -31,6 +31,22 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db?.execSQL(CREATE_LIBROS_TABLE)
     }
 
+    fun getAllSagas(): List<String> {
+        val sagas = mutableListOf<String>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT DISTINCT $COLUMN_NOMBRE_SAGA FROM $TABLE_LIBROS", null)
+        if (cursor.moveToFirst()) {
+            do {
+                val saga = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_SAGA))
+                sagas.add(saga)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return sagas
+    }
+
+
     fun getAllLibros(): List<Libro> {
         val libros = mutableListOf<Libro>()
         val db = this.readableDatabase

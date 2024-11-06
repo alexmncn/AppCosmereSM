@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+    android:orientation="vertical"
+    android:id="@+id/activity_libros"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/image_border"
+    android:fillViewport="true"
+    >
+
+    <!-- Spinner para el filtro de sagas -->
+    <Spinner
+        android:layout_marginTop="20dp"
+        android:id="@+id/spinnerSagas"
+        android:background="@drawable/image_border"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:spinnerMode="dropdown"
+        android:textColor="@color/gold"
+        />
+
+    <!-- RecyclerView para mostrar los libros -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="20dp"
+        android:id="@+id/recyclerViewLibros"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:translationY="15dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/rounded_bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="#403528" />
+</LinearLayout>
