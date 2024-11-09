@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Fondo del Spinner -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#C29F63"/>
+            <corners android:radius="5dp"/>
+        </shape>
+    </item>
+
+    <!-- Icono de la flecha -->
+    <item android:gravity="center_vertical|end" android:right="8dp">
+        <bitmap
+            android:src="@drawable/ic_menu"
+            android:tint="#403528"
+            android:width="3dp"
+            android:height="3dp"
+            android:gravity="center"/>
+    </item>
+</layer-list>

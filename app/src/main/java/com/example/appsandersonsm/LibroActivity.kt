@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appsandersonsm.Modelo.Libro
 import com.example.appsandersonsm.Repositorio.DatabaseHelper
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class LibroActivity : AppCompatActivity() {
 
@@ -20,11 +21,14 @@ class LibroActivity : AppCompatActivity() {
     private lateinit var listaLibros: List<Libro>
     private lateinit var listaSagas: List<String>
     private lateinit var dbHelper: DatabaseHelper
+    private lateinit var bottomNavigationView: BottomNavigationView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_libros)
 
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
         // Inicializar el Spinner
         spinnerSagas = findViewById(R.id.spinnerSagas)
 
@@ -40,6 +44,27 @@ class LibroActivity : AppCompatActivity() {
         // Configurar el Spinner y el RecyclerView
         configurarSpinner()
         configurarRecyclerView()
+
+        // Configuración de BottomNavigationView
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_settings -> {
+                    startActivity(Intent(this, AjustesActivity::class.java))
+                    true
+                }
+                R.id.nav_map -> {
+                    startActivity(Intent(this, MapaInteractivoActivity::class.java))
+                    true
+                }
+                R.id.nav_book -> {
+                    startActivity(Intent(this, LibroActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
+        bottomNavigationView.menu.findItem(R.id.nav_map).isChecked = true
+
     }
 
     override fun onResume() {
@@ -92,4 +117,8 @@ class LibroActivity : AppCompatActivity() {
         }
         libroAdapter.actualizarLista(listaFiltrada)
     }
+
+
+
 }
+

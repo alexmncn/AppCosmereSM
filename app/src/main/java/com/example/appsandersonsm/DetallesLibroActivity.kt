@@ -56,7 +56,10 @@ class DetallesLibroActivity : AppCompatActivity() {
                     startActivity(Intent(this, MapaInteractivoActivity::class.java))
                     true
                 }
-                R.id.nav_book -> true
+                R.id.nav_book -> {
+                    startActivity(Intent(this, LibroActivity::class.java))
+                    true
+                }
                 else -> false
             }
         }

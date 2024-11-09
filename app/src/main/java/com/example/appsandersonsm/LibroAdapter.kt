@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appsandersonsm.Modelo.Libro
@@ -20,6 +21,8 @@ class LibroAdapter(
         val imageViewPortada: ImageView = itemView.findViewById(R.id.imageViewPortada)
         val textViewNombreLibro: TextView = itemView.findViewById(R.id.textViewNombreLibro)
         val textViewNombreSaga: TextView = itemView.findViewById(R.id.textViewNombreSaga)
+        val progressBar = itemView.findViewById<ProgressBar>(R.id.progressBarLibro)
+
     }
 
 
@@ -34,6 +37,7 @@ class LibroAdapter(
         holder.imageViewPortada.setImageResource(resID)
         holder.textViewNombreLibro.text = libro.nombreLibro
         holder.textViewNombreSaga.text = libro.nombreSaga
+        holder.progressBar.progress = libro.progreso // Asigna el progreso al ProgressBar
 
         holder.itemView.setOnClickListener {
             onItemClick(libro)
