@@ -5,5 +5,6 @@ data class Libro(
     val nombreLibro: String,
     val nombreSaga: String,
     val nombrePortada: String,
-    var progreso: Int
+    var progreso: Int,
+    val totalPaginas: Int // Nueva propiedad para el total de páginas
 )

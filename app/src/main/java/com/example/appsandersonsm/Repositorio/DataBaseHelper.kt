@@ -20,6 +20,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_NOMBRE_SAGA = "nombreSaga"
         const val COLUMN_NOMBRE_PORTADA = "nombrePortada"
         const val COLUMN_PROGRESO = "progreso"
+        const val COLUMN_TOTAL_PAGINAS = "totalPaginas" // Si tienes este campo en tu base de datos
     }
 
     private val jsonHandler = JsonHandler(context) // Instancia de JsonHandler para leer JSON
@@ -30,7 +31,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_NOMBRE_LIBRO TEXT,"
                 + "$COLUMN_NOMBRE_SAGA TEXT,"
                 + "$COLUMN_NOMBRE_PORTADA TEXT,"
-                + "$COLUMN_PROGRESO INTEGER)")
+                + "$COLUMN_PROGRESO INTEGER,"
+                + "$COLUMN_TOTAL_PAGINAS INTEGER)") // Añadir esta columna si es necesaria
         db?.execSQL(CREATE_LIBROS_TABLE)
     }
 
@@ -68,17 +70,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 put(COLUMN_NOMBRE_SAGA, libro.nombreSaga)
                 put(COLUMN_NOMBRE_PORTADA, libro.nombrePortada)
                 put(COLUMN_PROGRESO, libro.progreso)
+                put(COLUMN_TOTAL_PAGINAS, libro.totalPaginas) // Si tienes este campo en tu modelo
             }
             db.insert(TABLE_LIBROS, null, values)
         }
         db.close()
     }
 
-    // Método para actualizar solo un libro en la base de datos
+    // Método para actualizar el progreso de un libro en la base de datos
     fun actualizarProgresoLibro(libro: Libro) {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_PROGRESO, libro.progreso)
+            put(COLUMN_TOTAL_PAGINAS, libro.totalPaginas) // Actualizar también el total de páginas
         }
         db.update(TABLE_LIBROS, values, "$COLUMN_ID = ?", arrayOf(libro.id.toString()))
         db.close()
@@ -89,7 +93,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = this.readableDatabase
         val cursor: Cursor = db.query(
             TABLE_LIBROS,
-            arrayOf(COLUMN_ID, COLUMN_NOMBRE_LIBRO, COLUMN_NOMBRE_SAGA, COLUMN_NOMBRE_PORTADA, COLUMN_PROGRESO),
+            arrayOf(COLUMN_ID, COLUMN_NOMBRE_LIBRO, COLUMN_NOMBRE_SAGA, COLUMN_NOMBRE_PORTADA, COLUMN_PROGRESO, COLUMN_TOTAL_PAGINAS),
             "$COLUMN_ID=?",
             arrayOf(id.toString()),
             null, null, null, null
@@ -102,13 +106,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 nombreLibro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_LIBRO)),
                 nombreSaga = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_SAGA)),
                 nombrePortada = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_PORTADA)),
-                progreso = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PROGRESO))
+                progreso = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PROGRESO)),
+                totalPaginas = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_PAGINAS))
             )
         }
         cursor.close()
         db.close()
         return libro
     }
+
+    // Método para obtener todas las sagas
     fun getAllSagas(): List<String> {
         val sagas = mutableListOf<String>()
         val db = this.readableDatabase
@@ -123,6 +130,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return sagas
     }
+
     // Método para obtener todos los libros desde la base de datos
     fun getAllLibros(): List<Libro> {
         val libros = mutableListOf<Libro>()
@@ -135,7 +143,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                     nombreLibro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_LIBRO)),
                     nombreSaga = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_SAGA)),
                     nombrePortada = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_PORTADA)),
-                    progreso = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PROGRESO))
+                    progreso = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PROGRESO)),
+                    totalPaginas = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_PAGINAS))
                 )
                 libros.add(libro)
             } while (cursor.moveToNext())
@@ -145,4 +154,33 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return libros
     }
 
+    // Método para obtener libros por saga
+    fun getLibrosBySagaId(nombreSaga: String): List<Libro> {
+        val libros = mutableListOf<Libro>()
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLE_LIBROS,
+            arrayOf(COLUMN_ID, COLUMN_NOMBRE_LIBRO, COLUMN_NOMBRE_SAGA, COLUMN_NOMBRE_PORTADA, COLUMN_PROGRESO, COLUMN_TOTAL_PAGINAS),
+            "$COLUMN_NOMBRE_SAGA = ?",
+            arrayOf(nombreSaga),
+            null, null, null
+        )
+
+        if (cursor.moveToFirst()) {
+            do {
+                val libro = Libro(
+                    id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                    nombreLibro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_LIBRO)),
+                    nombreSaga = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_SAGA)),
+                    nombrePortada = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOMBRE_PORTADA)),
+                    progreso = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PROGRESO)),
+                    totalPaginas = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_PAGINAS))
+                )
+                libros.add(libro)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return libros
+    }
 }

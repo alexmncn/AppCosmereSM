@@ -28,6 +28,7 @@ class JsonHandler(private val context: Context) {
     fun cargarLibrosDesdeJson(): List<Libro> {
         val libros = mutableListOf<Libro>()
         val jsonString = leerJsonDesdeAlmacenamientoInterno()
+
         if (jsonString != null) {
             val jsonArray = JSONArray(jsonString)
             for (i in 0 until jsonArray.length()) {
@@ -37,13 +38,16 @@ class JsonHandler(private val context: Context) {
                     nombreLibro = jsonObject.getString("nombreLibro"),
                     nombreSaga = jsonObject.getString("nombreSaga"),
                     nombrePortada = jsonObject.getString("nombrePortada"),
-                    progreso = jsonObject.getInt("progreso")
+                    progreso = jsonObject.optInt("progreso", 0),
+                    totalPaginas = jsonObject.optInt("totalPaginas", 100) // Usar optInt para totalPaginas con valor predeterminado
                 )
                 libros.add(libro)
             }
         }
         return libros
     }
+
+
 
     // Guarda una lista de libros en el archivo JSON
     fun guardarLibrosEnJson(libros: List<Libro>) {
