@@ -5,6 +5,8 @@ import android.graphics.Matrix
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -107,7 +109,11 @@ class MapaInteractivoActivity : AppCompatActivity() {
             markers.add(marker)
             markerContainer.addView(marker)
         }
-        actualizarMarcadores() // Actualiza las posiciones iniciales
+
+        // Llamar a actualizarMarcadores con un pequeño retraso para asegurar que PhotoView está listo
+        Handler(Looper.getMainLooper()).postDelayed({
+            actualizarMarcadores()
+        }, 50) // Ajusta el tiempo de retraso si es necesario
     }
 
     private fun actualizarMarcadores() {
