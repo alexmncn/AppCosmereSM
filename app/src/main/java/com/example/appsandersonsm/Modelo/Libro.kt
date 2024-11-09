@@ -5,5 +5,5 @@ data class Libro(
     val nombreLibro: String,
     val nombreSaga: String,
     val nombrePortada: String,
-    val progreso: Int
+    var progreso: Int
 )

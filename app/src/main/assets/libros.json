@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "nombreLibro": "El Camino de los Reyes",
+    "nombreSaga": "La Guerra de las Tormentas",
+    "nombrePortada": "portada_elcamino",
+    "progreso": 0
+  },
+  {
+    "id": 2,
+    "nombreLibro": "Palabras Radiantes",
+    "nombreSaga": "La Guerra de las Tormentas",
+    "nombrePortada": "portada_palabrasradiantes",
+    "progreso": 0
+  }
+]
