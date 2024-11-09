@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_bottom_nav"
-        app:itemIconTint="#403528"
+        app:itemIconTint="@drawable/menu_iconos_color"
         android:translationY="15dp"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"

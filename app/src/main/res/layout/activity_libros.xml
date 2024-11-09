@@ -49,7 +49,7 @@
         android:layout_gravity="bottom"
         android:background="@drawable/rounded_bottom_nav"
         android:translationY="15dp"
-        app:itemIconTint="#403528"
+        app:itemIconTint="@drawable/menu_iconos_color"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu" />
 </LinearLayout>

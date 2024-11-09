@@ -142,10 +142,10 @@
         android:layout_height="60dp"
         android:translationY="-41dp"
         android:layout_gravity="bottom"
+        app:itemIconTint="@drawable/menu_iconos_color"
         android:background="@drawable/rounded_bottom_nav"
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
-
-        app:itemIconTint="#403528" />
+        />
 
 </LinearLayout>

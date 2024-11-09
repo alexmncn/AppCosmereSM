@@ -68,13 +68,18 @@ class MapaInteractivoActivity : AppCompatActivity() {
         photoView.setOnMatrixChangeListener { actualizarMarcadores() }
 
         // Configuración de BottomNavigationView
+        bottomNavigationView.selectedItemId = R.id.nav_map
+
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_settings -> {
                     startActivity(Intent(this, AjustesActivity::class.java))
                     true
                 }
-                R.id.nav_map -> true
+                R.id.nav_map -> {
+                    // Ya estamos en MapaInteractivoActivity, no hacemos nada
+                    true
+                }
                 R.id.nav_book -> {
                     startActivity(Intent(this, LibroActivity::class.java))
                     true
@@ -82,7 +87,6 @@ class MapaInteractivoActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        bottomNavigationView.menu.findItem(R.id.nav_map).isChecked = true
     }
 
     private fun inicializarMarcadores() {

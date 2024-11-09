@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -24,6 +25,8 @@ class DetallesLibroActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Ocultar el Action Bar si es necesario
+        supportActionBar?.hide()
         setContentView(R.layout.activity_detalles_libro)
 
         // Inicializar vistas
@@ -39,13 +42,15 @@ class DetallesLibroActivity : AppCompatActivity() {
         // Cargar datos iniciales en la base de datos si es la primera vez
         dbHelper.cargarDatosInicialesDesdeJson()
 
-        // Obtén el ID del libro del Intent
+        // Obtener el ID del libro del Intent
         val libroId = intent.getIntExtra("LIBRO_ID", 0)
 
         // Cargar el libro desde la base de datos
         cargarDatosLibro(libroId)
 
         // Configuración del BottomNavigationView
+        bottomNavigationView.selectedItemId = R.id.nav_book
+
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_settings -> {
@@ -63,13 +68,12 @@ class DetallesLibroActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        bottomNavigationView.menu.findItem(R.id.nav_book).isChecked = true
 
         // Listeners para actualizar el progreso cuando cambian los valores
         editTextProgressCurrent.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                updateProgressBar()
                 guardarProgresoEnBaseDeDatos()
+                updateProgressBar()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -78,8 +82,8 @@ class DetallesLibroActivity : AppCompatActivity() {
 
         editTextProgressTotal.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                updateProgressBar() // Recalcula el progreso según el nuevo total
-                guardarProgresoEnBaseDeDatos() // Guarda el nuevo total en la base de datos
+                guardarProgresoEnBaseDeDatos()
+                updateProgressBar()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -93,9 +97,9 @@ class DetallesLibroActivity : AppCompatActivity() {
         libro?.let {
             val resID = resources.getIdentifier(it.nombrePortada, "drawable", packageName)
             imagenPortada.setImageResource(resID)
-            progressBar.progress = calcularProgreso(it.progreso, it.totalPaginas)
+            updateProgressBar()
             editTextProgressCurrent.setText(it.progreso.toString())
-            editTextProgressTotal.setText(it.totalPaginas.toString()) // Mostrar el total de páginas inicial
+            editTextProgressTotal.setText(it.totalPaginas.toString())
         }
     }
 
@@ -104,21 +108,29 @@ class DetallesLibroActivity : AppCompatActivity() {
     }
 
     private fun updateProgressBar() {
-        // Obtenemos los valores actuales de progreso y total de páginas desde los EditTexts
         val current = editTextProgressCurrent.text.toString().toIntOrNull() ?: 0
         val total = editTextProgressTotal.text.toString().toIntOrNull() ?: libro?.totalPaginas ?: 100
 
-        // Calculamos el progreso como porcentaje y lo asignamos a la ProgressBar
-        val progress = calcularProgreso(current, total)
-        progressBar.progress = progress.coerceIn(0, 100)
+        val progresoPorcentaje = calcularProgreso(current, total)
+        progressBar.max = 100
+        progressBar.progress = progresoPorcentaje.coerceIn(0, 100)
     }
 
     private fun guardarProgresoEnBaseDeDatos() {
-        // Guardamos el valor actual de progreso y total de páginas
         val current = editTextProgressCurrent.text.toString().toIntOrNull() ?: 0
         val total = editTextProgressTotal.text.toString().toIntOrNull() ?: 0
 
+        // Actualizar las propiedades del objeto 'libro'
         libro?.progreso = current
-        libro?.let { dbHelper.actualizarProgresoLibro(it.copy(progreso = current, totalPaginas = total)) }
+        libro?.totalPaginas = total
+
+        // Guardar el libro actualizado en la base de datos
+        libro?.let { dbHelper.actualizarProgresoLibro(it) }
+
+        // Log para depuración
+        Log.d(
+            "DetallesLibroActivity",
+            "Progreso guardado: ${libro?.progreso}, Total páginas guardado: ${libro?.totalPaginas}"
+        )
     }
 }

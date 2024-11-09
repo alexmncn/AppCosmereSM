@@ -4,8 +4,8 @@
     <!-- Capa para el borde dorado -->
     <item>
         <shape>
-            <solid android:color="#BFA26B" /> <!-- Color dorado para el borde -->
-            <corners android:radius="20dp" /> <!-- Radio del borde dorado -->
+            <solid android:color="@color/menuIconos" />
+            <corners android:radius="20dp" />
         </shape>
     </item>
 
@@ -16,8 +16,8 @@
         android:right="2dp"
         android:bottom="2dp">
         <shape>
-            <solid android:color="#1A1A1F" /> <!-- Color de fondo negro -->
-            <corners android:radius="16dp" /> <!-- Radio para bordes redondeados -->
+            <solid android:color="@color/menufondo" />
+            <corners android:radius="16dp" />
         </shape>
     </item>
 

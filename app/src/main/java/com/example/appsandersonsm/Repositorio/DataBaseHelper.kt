@@ -82,7 +82,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_PROGRESO, libro.progreso)
-            put(COLUMN_TOTAL_PAGINAS, libro.totalPaginas) // Actualizar también el total de páginas
+            put(COLUMN_TOTAL_PAGINAS, libro.totalPaginas)
         }
         db.update(TABLE_LIBROS, values, "$COLUMN_ID = ?", arrayOf(libro.id.toString()))
         db.close()

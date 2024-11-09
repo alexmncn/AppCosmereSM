@@ -23,12 +23,37 @@ class LibroActivity : AppCompatActivity() {
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var bottomNavigationView: BottomNavigationView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_libros)
 
+        // Inicializar el BottomNavigationView
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
+
+        // Configuración de BottomNavigationView
+        bottomNavigationView.selectedItemId = R.id.nav_book
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_settings -> {
+                    startActivity(Intent(this, AjustesActivity::class.java))
+                    true
+                }
+                R.id.nav_map -> {
+                    startActivity(Intent(this, MapaInteractivoActivity::class.java))
+                    true
+                }
+                R.id.nav_book -> {
+                    // Ya estamos en LibroActivity, no hacemos nada
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // No es necesario esta línea, ya que puede causar conflicto:
+        // bottomNavigationView.menu.findItem(R.id.nav_map).isChecked = true
+
         // Inicializar el Spinner
         spinnerSagas = findViewById(R.id.spinnerSagas)
 
@@ -44,35 +69,14 @@ class LibroActivity : AppCompatActivity() {
         // Configurar el Spinner y el RecyclerView
         configurarSpinner()
         configurarRecyclerView()
-
-        // Configuración de BottomNavigationView
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_settings -> {
-                    startActivity(Intent(this, AjustesActivity::class.java))
-                    true
-                }
-                R.id.nav_map -> {
-                    startActivity(Intent(this, MapaInteractivoActivity::class.java))
-                    true
-                }
-                R.id.nav_book -> {
-                    startActivity(Intent(this, LibroActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
-        bottomNavigationView.menu.findItem(R.id.nav_map).isChecked = true
-
     }
 
     override fun onResume() {
         super.onResume()
-        // Obtener la saga seleccionada actualmente
-        val sagaSeleccionada = spinnerSagas.selectedItem.toString()
         // Actualizar la lista de libros desde la base de datos
         listaLibros = dbHelper.getAllLibros()
+        // Obtener la saga seleccionada actualmente
+        val sagaSeleccionada = spinnerSagas.selectedItem.toString()
         // Filtrar la lista según la saga seleccionada
         filtrarLibrosPorSaga(sagaSeleccionada)
     }
@@ -117,8 +121,4 @@ class LibroActivity : AppCompatActivity() {
         }
         libroAdapter.actualizarLista(listaFiltrada)
     }
-
-
-
 }
-

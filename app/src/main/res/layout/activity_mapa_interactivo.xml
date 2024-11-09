@@ -30,5 +30,6 @@
             android:background="@drawable/rounded_bottom_nav"
             app:menu="@menu/bottom_nav_menu"
             app:labelVisibilityMode="labeled"
-            app:itemIconTint="#403528" />
+            app:itemIconTint="@drawable/menu_iconos_color"
+            />
     </FrameLayout>

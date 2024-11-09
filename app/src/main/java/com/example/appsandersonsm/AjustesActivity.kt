@@ -15,7 +15,6 @@ class AjustesActivity : AppCompatActivity() {
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var bottomNavigationView: BottomNavigationView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajustes)
@@ -26,20 +25,21 @@ class AjustesActivity : AppCompatActivity() {
         textViewSagasLeidas = findViewById(R.id.textViewSagasLeidas)
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-
         // Inicializar DatabaseHelper
         dbHelper = DatabaseHelper(this)
 
         // Cargar y mostrar las estadísticas
         cargarEstadisticas()
 
+        // Configurar el listener del BottomNavigationView
+        bottomNavigationView.selectedItemId = R.id.nav_settings
+
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_settings -> {
-                    startActivity(Intent(this, AjustesActivity::class.java))
+                    // Ya estamos en AjustesActivity, no hacemos nada
                     true
                 }
-
                 R.id.nav_map -> {
                     startActivity(Intent(this, MapaInteractivoActivity::class.java))
                     true
@@ -48,11 +48,9 @@ class AjustesActivity : AppCompatActivity() {
                     startActivity(Intent(this, LibroActivity::class.java))
                     true
                 }
-
                 else -> false
             }
         }
-        bottomNavigationView.menu.findItem(R.id.nav_map).isChecked = true
     }
 
     private fun cargarEstadisticas() {

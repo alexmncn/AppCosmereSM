@@ -1,6 +1,7 @@
 package com.example.appsandersonsm
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,10 +22,8 @@ class LibroAdapter(
         val imageViewPortada: ImageView = itemView.findViewById(R.id.imageViewPortada)
         val textViewNombreLibro: TextView = itemView.findViewById(R.id.textViewNombreLibro)
         val textViewNombreSaga: TextView = itemView.findViewById(R.id.textViewNombreSaga)
-        val progressBar = itemView.findViewById<ProgressBar>(R.id.progressBarLibro)
-
+        val progressBar: ProgressBar = itemView.findViewById(R.id.progressBarLibro)
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibroViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_libro, parent, false)
@@ -37,7 +36,23 @@ class LibroAdapter(
         holder.imageViewPortada.setImageResource(resID)
         holder.textViewNombreLibro.text = libro.nombreLibro
         holder.textViewNombreSaga.text = libro.nombreSaga
-        holder.progressBar.progress = libro.progreso // Asigna el progreso al ProgressBar
+
+        // Calcular el progreso como porcentaje
+        val progresoPorcentaje = if (libro.totalPaginas > 0) {
+            (libro.progreso * 100) / libro.totalPaginas
+        } else {
+            0
+        }
+
+        // Asignar el progreso calculado al ProgressBar
+        holder.progressBar.max = 100
+        holder.progressBar.progress = progresoPorcentaje.coerceIn(0, 100)
+
+        // Log para depuración
+        Log.d(
+            "LibroAdapter",
+            "Libro: ${libro.nombreLibro}, Progreso: ${libro.progreso}, Total Páginas: ${libro.totalPaginas}, Progreso Calculado: $progresoPorcentaje"
+        )
 
         holder.itemView.setOnClickListener {
             onItemClick(libro)

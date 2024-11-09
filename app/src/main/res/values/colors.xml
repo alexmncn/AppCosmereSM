@@ -11,5 +11,7 @@
     <color name="gold_s">#D4A857</color>
     <color name="gray_light">#D3D3D3</color>
     <color name="gray">#808080</color>
-
+    <color name="menufondo">#1A1A1F</color>
+    <color name="menuIconos">#BFA26B</color>
+    <color name="menuIconosApagado">#8B6E4E</color>
 </resources>
