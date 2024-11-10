@@ -1,3 +1,4 @@
+// src/main/java/com/example/appsandersonsm/MapaInteractivoActivity.kt
 package com.example.appsandersonsm
 
 import android.content.Intent
@@ -27,12 +28,30 @@ class MapaInteractivoActivity : AppCompatActivity() {
     private lateinit var listaLibros: List<Libro>
     private val markers = mutableListOf<ImageView>()
     private lateinit var drawable: Drawable
+    private lateinit var arrowOverlayView: ArrowOverlayView
 
     // Coordenadas normalizadas asociadas por ID de libro
     private val libroCoordenadasNormalizadas = mapOf(
-        1 to PointF(0.5f, 0.85f),  // ID 1
-        2 to PointF(0.6f, 0.8f)    // ID 2
-        // Agrega más entradas según tus necesidades
+        1 to PointF(0.38f, 0.80f),  // ID 1
+        2 to PointF(0.45f, 0.86f),  // ID 2
+        3 to PointF(0.55f, 0.88f),  // ID 3
+        4 to PointF(0.64f, 0.85f),  // ID 4
+        5 to PointF(0.06f,0.76f), // aliento
+        6 to PointF(0.105f,0.63f),  // heroe
+        7 to PointF(0.07f,0.50f),  // pozo
+        8 to PointF(0.12f,0.40f),  // nacidos
+        )
+
+    // Definir relaciones cronológicas entre libros
+    private val relacionesCronologicas = listOf(
+        Pair(1, 2),
+        Pair(2, 3),
+        Pair(3, 4),
+        Pair(5,1),
+        Pair(8,7),
+        Pair(7,6),
+        Pair(6,5),
+        // Agrega más relaciones según tus necesidades
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,9 +65,11 @@ class MapaInteractivoActivity : AppCompatActivity() {
         // Obtener la lista de libros desde la base de datos
         listaLibros = dbHelper.getAllLibros()
 
+        // Inicializar vistas
         photoView = findViewById(R.id.photoView)
-        markerContainer = findViewById(R.id.mapContainer)
+        markerContainer = findViewById(R.id.mapContainerMarkers)
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
+        arrowOverlayView = findViewById(R.id.arrowOverlayView)
 
         // Configuración de la imagen en el PhotoView
         drawable = photoView.drawable ?: throw IllegalStateException("PhotoView no tiene una imagen establecida.")
@@ -64,8 +85,8 @@ class MapaInteractivoActivity : AppCompatActivity() {
             }
         })
 
-        // Listener para actualizar la posición de los marcadores
-        photoView.setOnMatrixChangeListener { actualizarMarcadores() }
+        // Listener para actualizar la posición de los marcadores y las flechas
+        photoView.setOnMatrixChangeListener { actualizarMarcadoresYFlechas() }
 
         // Configuración de BottomNavigationView
         bottomNavigationView.selectedItemId = R.id.nav_map
@@ -87,6 +108,10 @@ class MapaInteractivoActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        // Configurar las relaciones cronológicas en el ArrowOverlayView
+        arrowOverlayView.relaciones = relacionesCronologicas
+//        arrowOverlayView.libros = listaLibros
     }
 
     private fun inicializarMarcadores() {
@@ -114,13 +139,13 @@ class MapaInteractivoActivity : AppCompatActivity() {
             markerContainer.addView(marker)
         }
 
-        // Llamar a actualizarMarcadores con un pequeño retraso para asegurar que PhotoView está listo
+        // Llamar a actualizarMarcadoresYFlechas con un pequeño retraso para asegurar que PhotoView está listo
         Handler(Looper.getMainLooper()).postDelayed({
-            actualizarMarcadores()
+            actualizarMarcadoresYFlechas()
         }, 50) // Ajusta el tiempo de retraso si es necesario
     }
 
-    private fun actualizarMarcadores() {
+    private fun actualizarMarcadoresYFlechas() {
         val matrix = FloatArray(9)
         photoView.imageMatrix.getValues(matrix)
 
@@ -135,6 +160,9 @@ class MapaInteractivoActivity : AppCompatActivity() {
         val scaledWidth = imageWidth * scaleX
         val scaledHeight = imageHeight * scaleY
 
+        // Mapa para almacenar las coordenadas en pantalla de cada libro
+        val coordenadasPantalla = mutableMapOf<Int, Pair<Float, Float>>()
+
         markers.forEachIndexed { index, marker ->
             val libro = listaLibros[index]
             val coordNormalizada = libroCoordenadasNormalizadas[libro.id] ?: PointF(0.5f, 0.5f)
@@ -142,7 +170,15 @@ class MapaInteractivoActivity : AppCompatActivity() {
             val absY = (coordNormalizada.y * scaledHeight) + transY
             marker.x = absX - (marker.width / 2)
             marker.y = absY - (marker.height / 2)
+
+            coordenadasPantalla[libro.id] = Pair(absX, absY)
         }
+
+        // Actualizar las coordenadas en el ArrowOverlayView
+        arrowOverlayView.libroCoordenadasPantalla = coordenadasPantalla
+
+        // Redibujar las flechas
+        arrowOverlayView.invalidate()
     }
 
     private fun abrirDetallesLibro(libroId: Int) {

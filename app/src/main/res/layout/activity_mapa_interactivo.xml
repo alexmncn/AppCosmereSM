@@ -1,35 +1,41 @@
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<!-- res/layout/activity_mapa_interactivo.xml -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mapContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/image_border">
+
+    <!-- Mapa interactivo con PhotoView ocupando toda la pantalla -->
+    <io.getstream.photoview.PhotoView
+        android:id="@+id/photoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/image_border"
-        >
+        android:src="@drawable/mapa_cosmere"
+        android:scaleType="centerCrop"
+        android:contentDescription="Mapa del Cosmere" />
 
-        <!-- Mapa interactivo con PhotoView ocupando toda la pantalla -->
-        <io.getstream.photoview.PhotoView
-            android:id="@+id/photoView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/mapa_cosmere"
-            android:scaleType="centerCrop"
-            android:contentDescription="Mapa del Cosmere" />
+    <!-- Vista personalizada para dibujar flechas -->
+    <com.example.appsandersonsm.ArrowOverlayView
+        android:id="@+id/arrowOverlayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <!-- Contenedor de marcadores para los libros -->
-        <FrameLayout
-            android:id="@+id/mapContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <!-- Contenedor de marcadores para los libros -->
+    <FrameLayout
+        android:id="@+id/mapContainerMarkers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <!-- Menú inferior fijo encima del mapa -->
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:translationY="15dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/rounded_bottom_nav"
-            app:menu="@menu/bottom_nav_menu"
-            app:labelVisibilityMode="labeled"
-            app:itemIconTint="@drawable/menu_iconos_color"
-            />
-    </FrameLayout>
+    <!-- Menú inferior fijo encima del mapa -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:translationY="15dp"
+        android:background="@drawable/rounded_bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@drawable/menu_iconos_color" />
+</FrameLayout>

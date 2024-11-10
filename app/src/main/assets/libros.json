@@ -10,8 +10,56 @@
   {
     "id": 2,
     "nombreLibro": "Palabras Radiantes",
-    "nombreSaga": "Nacidos de la Bruma",
+    "nombreSaga": "El Archivo de las Tormentas",
     "nombrePortada": "portada_palabrasradiantes",
+    "progreso": 0,
+    "totalPaginas": 1500
+  },
+  {
+    "id": 3,
+    "nombreLibro": "Juramentada",
+    "nombreSaga": "El Archivo de las Tormentas",
+    "nombrePortada": "portada_juramentada",
+    "progreso": 0,
+    "totalPaginas": 1500
+  },
+  {
+    "id": 4,
+    "nombreLibro": "El Ritmo de la Guerra",
+    "nombreSaga": "El Archivo de las Tormentas",
+    "nombrePortada": "portada_elritmoguerra",
+    "progreso": 0,
+    "totalPaginas": 1500
+  },
+  {
+    "id": 5,
+    "nombreLibro": "El Aliento de los Dioses",
+    "nombreSaga": "Libro Independiente",
+    "nombrePortada": "portada_elaliento",
+    "progreso": 0,
+    "totalPaginas": 1500
+  },
+  {
+    "id": 6,
+    "nombreLibro": "El Héroe de las Eras",
+    "nombreSaga": "Nacidos de la Bruma",
+    "nombrePortada": "portada_elheroe",
+    "progreso": 0,
+    "totalPaginas": 1500
+  },
+  {
+    "id": 7,
+    "nombreLibro": "El Pozo de la Ascensión",
+    "nombreSaga": "Nacidos de la Bruma",
+    "nombrePortada": "portada_elpozo",
+    "progreso": 0,
+    "totalPaginas": 1500
+  },
+  {
+    "id": 8,
+    "nombreLibro": "Nacidos de la Bruma (El imperio final)",
+    "nombreSaga": "Nacidos de la Bruma",
+    "nombrePortada": "portada_nacidos",
     "progreso": 0,
     "totalPaginas": 1500
   }
